@@ -1,0 +1,13 @@
+Paso 1: Modificar la clase ServerApp
+
+En la clase ServerApp, crea una lista para
+ almacenar todos los ObjectOutputStream de los
+ clientes. También modifica la creación de
+ ClientHandler para pasar esta lista:
+
+ Paso 2: Modificar la clase ClientHandler
+
+ En la clase ClientHandler, ajusta el constructor
+ y el método run para que tenga acceso a la lista
+ de ObjectOutputStream y pueda enviar mensajes a
+ todos los clientes:
