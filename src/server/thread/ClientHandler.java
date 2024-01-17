@@ -29,22 +29,34 @@ public class ClientHandler extends Thread{
             System.out.println("<" + username + ">");
 
             String mensajeRecibido = "";
+            for (String message : sharedMessages) {
+                DataOutputStream clientOutputStream = new DataOutputStream(clientSocket.getOutputStream());
+                clientOutputStream.writeUTF(message);
+                clientOutputStream.flush();
+            }
+        
             while (!mensajeRecibido.equals("bye")) {
                 mensajeRecibido = dataInputStream.readUTF();
 
-                String mensajeTotal = dateFormat.format(date) + " " + username + ":" + '<' + mensajeRecibido + '>';
-                System.out.println(mensajeTotal);
+                if (mensajeRecibido.startsWith("msg:")) {
+                    String mensajeTotal = dateFormat.format(date) + " " + username + ":" + '<' + mensajeRecibido + '>';
+                    System.out.println(mensajeTotal);
 
+                    synchronized (sharedMessages) {
+                        sharedMessages.add(mensajeTotal);
+                    }
 
-                synchronized (sharedMessages) {
-                    sharedMessages.add(mensajeTotal);
+                    // Le envio este mensaje a todos los clientes conectados
+
+                } else if (mensajeRecibido.equals("bye")) {
+                    clientSocket.close();
+                } else {
+                    System.out.println("Error Ingrese los prefijos indicados");
                 }
 
 
-                for (String message : sharedMessages) {
-                    DataOutputStream clientOutputStream = new DataOutputStream(clientSocket.getOutputStream());
-                    clientOutputStream.writeUTF(message);
-                }
+
+
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
