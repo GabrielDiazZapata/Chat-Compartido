@@ -1,5 +1,4 @@
 package client;
-
 import client.thread.ListenerThread;
 
 import java.io.DataInputStream;
@@ -21,26 +20,24 @@ public class ClientApp {
             System.out.println("¿Cómo te llamas?");
             String username = sc.nextLine();
             dataOutputStream.writeUTF(username);
+            dataOutputStream.flush();
 
+            ListenerThread listenerThread = new ListenerThread(dataInputStream);
+            listenerThread.start();
 
-            ListenerThread hilo = new ListenerThread(dataInputStream);
-            hilo.start();
-
-
-            boolean x = true;
-            while (x) {
-                System.out.println("Envía un mensaje al servidor (bye para salir): ");
+            boolean exit = false;
+            while (!exit) {
+                System.out.println("Envía un mensaje al servidor con msg (bye para salir): ");
                 usermensaje = sc.nextLine();
                 dataOutputStream.writeUTF(usermensaje);
                 dataOutputStream.flush();
 
                 if (usermensaje.equals("bye")) {
-                    x = false;
+                    exit = true;
                 }
             }
 
-
-            hilo.join();
+            listenerThread.join();
 
             sc.close();
             socket.close();
