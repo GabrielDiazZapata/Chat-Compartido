@@ -1,5 +1,4 @@
 package client;
-
 import client.thread.ListenerThread;
 
 import java.io.DataInputStream;
@@ -22,10 +21,9 @@ public class ClientApp {
             String username = sc.nextLine();
             dataOutputStream.writeUTF(username);
             dataOutputStream.flush();
-            
+
             ListenerThread listenerThread = new ListenerThread(dataInputStream);
             listenerThread.start();
-
 
             boolean exit = false;
             while (!exit) {
@@ -33,8 +31,9 @@ public class ClientApp {
                 usermensaje = sc.nextLine();
                 dataOutputStream.writeUTF(usermensaje);
                 dataOutputStream.flush();
+
                 if (usermensaje.equals("bye")) {
-                    exit = false;
+                    exit = true;
                 }
             }
 

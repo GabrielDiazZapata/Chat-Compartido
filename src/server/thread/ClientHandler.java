@@ -29,23 +29,23 @@ public class ClientHandler extends Thread{
             System.out.println("<" + username + ">");
 
             String mensajeRecibido = "";
-            for (String message : sharedMessages) {
-                DataOutputStream clientOutputStream = new DataOutputStream(clientSocket.getOutputStream());
-                clientOutputStream.writeUTF(message);
-                clientOutputStream.flush();
-            }
-        
+            
             while (!mensajeRecibido.equals("bye")) {
                 mensajeRecibido = dataInputStream.readUTF();
-
+                
                 if (mensajeRecibido.startsWith("msg:")) {
                     String mensajeTotal = dateFormat.format(date) + " " + username + ":" + '<' + mensajeRecibido + '>';
                     System.out.println(mensajeTotal);
-
+                    
                     synchronized (sharedMessages) {
                         sharedMessages.add(mensajeTotal);
                     }
-
+                    
+                    for (String message : sharedMessages) {
+                        DataOutputStream clientOutputStream = new DataOutputStream(clientSocket.getOutputStream());
+                        clientOutputStream.writeUTF(message);
+                        clientOutputStream.flush();
+                    }
                     // Le envio este mensaje a todos los clientes conectados
 
                 } else if (mensajeRecibido.equals("bye")) {
